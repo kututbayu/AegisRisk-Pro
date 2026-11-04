@@ -133,7 +133,7 @@ Edit inputs to verify risk calculations.</div>
   </div>
 </section>
 </div>
-<div class="foot">AEGISRISK PRO • Verification build 0.1.0 • No secrets stored • No live orders submitted</div>
+<div class="foot">AEGISRISK PRO • Verification build 0.2.1 • No secrets stored • No live orders submitted</div>
 </main>
 <script type="module">
 const $ = id => document.getElementById(id);
@@ -174,6 +174,17 @@ $("sell").addEventListener("click",()=>log("Blocked by safety guard: live execut
 calculate();
 
 // cTrader plugin SDK handshake, using the official SDK packages served as ESM.
+window.addEventListener("error", event => {
+  log("Browser runtime error.", {
+    message: event.message,
+    filename: event.filename,
+    line: event.lineno,
+    column: event.colno
+  });
+});
+window.addEventListener("unhandledrejection", event => {
+  log("Unhandled promise rejection.", String(event.reason));
+});
 let adapter=null, connected=false, sdk=null;
 try {
   const external=await import("https://esm.sh/@spotware-web-team/sdk-external-api@0.0.5");
@@ -185,16 +196,74 @@ try {
   $("sdkChip").textContent="SDK LOADED";
   $("hostState").textContent="Handshake…";
   $("connection").innerHTML='<span class="dot"></span>SDK dimuat; menunggu host';
-  sdk.handleConfirmEvent(adapter,{}).pipe(rx.take(1)).subscribe();
-  sdk.registerEvent(adapter).pipe(rx.take(1),rx.tap(()=>{
-    sdk.handleConfirmEvent(adapter,{}).pipe(rx.take(1)).subscribe();
-    connected=true;
-    $("hostState").textContent="Connected";
-    $("connection").style.color="var(--green)";
-    $("connection").innerHTML='<span class="dot"></span>Terhubung ke cTrader';
-    $("sdkChip").textContent="CONNECTED";
-    log("Connected to cTrader host.");
-  }),rx.catchError(err=>{log("Host handshake failed",String(err));return [];})).subscribe();
+  // Diagnostic handshake: do not mark connected until registerEvent emits a host response.
+  log("SDK modules imported successfully.");
+  log("Using the cTrader client adapter created for this session.");
+
+  const describeError = err => {
+    if (err && typeof err === "object") {
+      return {
+        name: err.name || "Error",
+        message: err.message || String(err),
+        code: err.code,
+        details: err.details
+      };
+    }
+    return String(err);
+  };
+
+  log("Handshake step 1/3: sending initial confirmEvent.");
+  sdk.handleConfirmEvent(adapter,{}).pipe(
+    rx.take(1),
+    rx.tap(() => log("Initial confirmEvent response received.")),
+    rx.catchError(err => {
+      log("Initial confirmEvent failed.", describeError(err));
+      return [];
+    })
+  ).subscribe({
+    complete: () => log("Initial confirmEvent stream completed.")
+  });
+
+  log("Handshake step 2/3: waiting for registerEvent host response (15-second timeout).");
+  sdk.registerEvent(adapter).pipe(
+    rx.take(1),
+    rx.timeout({ first: 15000 }),
+    rx.tap(res => {
+      log("registerEvent response received.", res);
+      log("Handshake step 3/3: sending final confirmEvent.");
+      sdk.handleConfirmEvent(adapter,{}).pipe(
+        rx.take(1),
+        rx.tap(() => log("Final confirmEvent response received.")),
+        rx.catchError(err => {
+          log("Final confirmEvent failed.", describeError(err));
+          return [];
+        })
+      ).subscribe({
+        complete: () => log("Final confirmEvent stream completed.")
+      });
+
+      connected=true;
+      $("hostState").textContent="Connected";
+      $("connection").style.color="var(--green)";
+      $("connection").innerHTML='<span class="dot"></span>Terhubung ke cTrader';
+      $("sdkChip").textContent="CONNECTED";
+      log("Handshake complete: cTrader host registration confirmed.");
+    }),
+    rx.catchError(err => {
+      const timedOut = err && (err.name === "TimeoutError" || err.name === "Timeout");
+      $("hostState").textContent = timedOut ? "Timeout — host belum merespons" : "Handshake gagal";
+      $("connection").style.color="var(--amber)";
+      $("connection").innerHTML='<span class="dot"></span>SDK dimuat; host belum terhubung';
+      $("sdkChip").textContent = timedOut ? "HOST TIMEOUT" : "HANDSHAKE ERROR";
+      log(timedOut
+        ? "Host did not respond to registerEvent within 15 seconds. Confirm this page is opened inside the published cTrader WebView plugin, then check plugin domain/URL configuration."
+        : "Host handshake failed.", describeError(err));
+      return [];
+    })
+  ).subscribe({
+    error: err => log("Unexpected registerEvent stream error.", describeError(err)),
+    complete: () => log("registerEvent stream completed.")
+  });
   $("getAccount").addEventListener("click",()=>{
     if(!connected){log("Account request blocked: host not connected.");return;}
     sdk.getAccountInformation(adapter,{}).pipe(rx.take(1),rx.tap(res=>{
