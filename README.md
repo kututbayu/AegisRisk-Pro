@@ -1,6 +1,7 @@
 # AegisRisk Pro — Web Plugin verification build
 
-Version: 0.1.0  
+Version: 0.2.0  
+UI update: compact grouped sections with collapsible advanced settings, account tools, logs and readiness checklist.  
 Language: Indonesian UI  
 Purpose: premium responsive risk calculator + cTrader Plugin SDK handshake/account/symbol verification.
 

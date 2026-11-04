@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>AegisRisk Pro — Risk Manager</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2b;--panel2:#0e1524;--line:#2c3950;--muted:#91a2bc;--text:#eef4ff;--green:#35d49a;--red:#ff6375;--blue:#64b5ff;--amber:#f6c66b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0%,#142746 0,transparent 45%),linear-gradient(135deg,#090e1a,#0c1222 65%,#10132a);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}
+main{max-width:1080px;margin:auto;padding:22px 16px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#174c43,#17365e);border:1px solid #3b8f88;box-shadow:0 0 28px #1bba9b22;font-size:25px;color:var(--green);font-weight:900}.brand h1{font-size:22px;letter-spacing:.3px;margin:0}.brand h1 span{color:var(--green)}.sub{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:2px}.status{border:1px solid var(--line);border-radius:99px;padding:8px 12px;color:var(--amber);font-size:12px;white-space:nowrap;background:#111a2b}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:7px}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:16px}.card{border:1px solid #28364c;background:linear-gradient(150deg,#151f32f2,#0f1728f5);border-radius:20px;padding:20px;box-shadow:0 16px 48px #0003;min-width:0}.cardhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:17px}.card h2{font-size:14px;letter-spacing:1.1px;margin:0}.eyebrow{font-size:10px;letter-spacing:1.7px;color:var(--muted)}.chip{border:1px solid #245a4f;background:#10372f;color:#8cf0ca;border-radius:99px;padding:5px 9px;font-size:11px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}.field label{font-size:11px;color:#aebbd0;letter-spacing:.5px}.field input,.field select{width:100%;background:#0a1120;border:1px solid #30415b;border-radius:10px;padding:12px;color:#f3f7ff;font:inherit;outline:none;min-width:0}.field input:focus,.field select:focus{border-color:#4fa9ff;box-shadow:0 0 0 3px #4fa9ff18}.help{font-size:11px;color:var(--muted);margin-top:-5px}.riskbox{background:linear-gradient(135deg,#0d2d2a,#102a2c 55%,#11223a);border:1px solid #25645a;border-radius:16px;padding:17px;margin:4px 0 14px}.riskbox .label{font-size:10px;color:#a7cfc5;letter-spacing:1.6px}.big{font-size:34px;font-weight:800;color:var(--green);letter-spacing:-1px;margin:3px 0}.riskmeta{display:flex;justify-content:space-between;gap:12px;color:#b9c9d8;font-size:12px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.btn{border:0;border-radius:11px;padding:13px 12px;font:700 13px inherit;letter-spacing:.5px;cursor:pointer;transition:transform .15s,filter .15s}.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.btn:disabled{opacity:.42;cursor:not-allowed;transform:none}.buy{background:linear-gradient(135deg,#15845e,#26b77d);color:white}.sell{background:linear-gradient(135deg,#a82c45,#e44d65);color:white}.secondary{background:#1b2a40;color:#d8e8ff;border:1px solid #344762}.note{padding:11px 12px;border-radius:11px;background:#101a2b;border:1px solid #283950;color:#aebed3;font-size:11px;margin-top:12px}.warn{border-color:#69552e;background:#2a2112;color:#f4d69b}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#0c1423;border:1px solid #24334a;border-radius:13px;padding:14px}.stat span{display:block;font-size:10px;color:var(--muted);letter-spacing:1px}.stat strong{display:block;font-size:19px;margin-top:5px;overflow-wrap:anywhere}.stat .green{color:var(--green)}.log{height:190px;overflow:auto;white-space:pre-wrap;word-break:break-word;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#b9c8dc;background:#080e19;border:1px solid #26364b;border-radius:12px;padding:12px}.foot{color:#71839e;font-size:11px;text-align:center;margin-top:17px}.sectiongap{margin-top:16px}.row{display:flex;gap:8px;flex-wrap:wrap}.row .btn{flex:1}.hidden{display:none!important}
+@media(max-width:760px){main{padding:15px 11px 28px}.top{align-items:flex-start}.brand h1{font-size:19px}.status{font-size:10px;padding:7px 9px}.layout{grid-template-columns:1fr}.card{padding:16px}.big{font-size:30px}}
+@media(max-width:380px){.grid2{grid-template-columns:1fr}.top{flex-direction:column}.stats{grid-template-columns:1fr 1fr}}
+
+/* Compact workspace layout */
+main{max-width:1120px;padding:14px 14px 22px}
+.top{margin-bottom:12px}
+.card{padding:15px;border-radius:16px}
+.layout{gap:12px;grid-template-columns:minmax(0,1.15fr) minmax(275px,.85fr)}
+.cardhead{margin-bottom:11px}
+.grid2{gap:8px 10px}
+.field{gap:5px;margin-bottom:8px}
+.field label{font-size:10px}
+.field input,.field select{padding:9px 10px;border-radius:9px;font-size:13px}
+.riskbox{padding:12px 14px;margin:3px 0 10px}
+.big{font-size:29px}
+.stat{padding:10px}
+.stat strong{font-size:16px}
+.actions{margin-top:9px}
+.btn{padding:10px 11px;border-radius:9px;font-size:12px}
+.note{padding:9px 10px;margin-top:9px}
+.sectiongap{margin-top:10px}
+.log{height:125px}
+details.compact{border:1px solid #283950;border-radius:12px;background:#0d1524;margin-top:10px;overflow:hidden}
+details.compact>summary{cursor:pointer;list-style:none;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#dce8fa;font-size:12px;font-weight:700;letter-spacing:.3px}
+details.compact>summary::-webkit-details-marker{display:none}
+details.compact>summary:after{content:"＋";color:var(--green);font-size:16px}
+details.compact[open]>summary:after{content:"−"}
+.details-body{padding:0 12px 12px}
+.layout{align-items:start}
+.leftcol,.rightcol{min-width:0}
+@media(max-width:760px){main{padding:10px 9px 18px}.layout{grid-template-columns:1fr}.card{padding:13px}.grid2{grid-template-columns:1fr 1fr}.big{font-size:27px}.top{margin-bottom:9px}}
+@media(max-width:360px){.grid2{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
+
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+  <div class="brand"><div class="logo">A</div><div><h1>AegisRisk <span>Pro</span></h1><div class="sub">SMART RISK. SAFE TRADE.</div></div></div>
+  <div class="status" id="connection"><span class="dot"></span>Menunggu cTrader host</div>
+</header>
+<div class="layout">
+<section class="leftcol">
+  <div class="card">
+    <div class="cardhead"><h2>RISK WORKSPACE</h2><span class="chip">CALCULATOR</span></div>
+    <div class="grid2">
+      <div class="field"><label for="risk">RISK PER TRADE (%)</label><input id="risk" type="number" min="0.01" max="10" step="0.01" value="1"></div>
+      <div class="field"><label for="equity">ACCOUNT EQUITY</label><input id="equity" type="number" min="0.01" step="any" value="10000"></div>
+      <div class="field"><label for="entry">ENTRY PRICE</label><input id="entry" type="number" min="0.00000001" step="any" value="1.08500"></div>
+      <div class="field"><label for="stop">STOP LOSS PRICE</label><input id="stop" type="number" min="0.00000001" step="any" value="1.08200"></div>
+    </div>
+    <div class="riskbox">
+      <div class="label">ESTIMATED POSITION SIZE</div>
+      <div class="big" id="lots">0.33 lots</div>
+      <div class="riskmeta"><span id="slDistance">SL distance: 30.0 pips</span><span id="riskCash">Risk budget: $100.00</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span>ESTIMATED VOLUME</span><strong id="units">33,333 units*</strong></div>
+      <div class="stat"><span>RISK / EQUITY</span><strong class="green" id="riskPercentOut">1.00%</strong></div>
+    </div>
+    <div class="actions">
+      <button class="btn buy" id="buy" disabled>↑ BUY — LIVE OFF</button>
+      <button class="btn sell" id="sell" disabled>↓ SELL — LIVE OFF</button>
+    </div>
+    <div class="note warn">Preview mode: tombol trading dinonaktifkan. Belum ada order yang dikirim ke broker.</div>
+
+    <details class="compact" open>
+      <summary>Trade setup lanjutan <span class="eyebrow">SYMBOL · PIP</span></summary>
+      <div class="details-body">
+        <div class="grid2">
+          <div class="field"><label for="symbol">SYMBOL</label><input id="symbol" value="EURUSD" maxlength="24" autocomplete="off"></div>
+          <div class="field"><label for="currency">ACCOUNT CURRENCY</label><input id="currency" value="USD" maxlength="12"></div>
+          <div class="field"><label for="pipSize">PIP SIZE</label><input id="pipSize" type="number" min="0.00000001" step="any" value="0.0001"></div>
+          <div class="field"><label for="pipValue">PIP VALUE / 1 LOT (<span id="ccyLabel">USD</span>)</label><input id="pipValue" type="number" min="0.00000001" step="any" value="10"></div>
+        </div>
+        <div class="help">Pip size dan pip value harus sesuai spesifikasi simbol dan mata uang akun. Volume unit masih estimasi.</div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="rightcol">
+  <div class="card">
+    <div class="cardhead"><h2>PLATFORM CONNECTION</h2><span class="chip" id="sdkChip">SDK CHECK</span></div>
+    <div class="stats">
+      <div class="stat"><span>HOST STATUS</span><strong id="hostState">Belum terhubung</strong></div>
+      <div class="stat"><span>SDK MODE</span><strong id="mode">Browser preview</strong></div>
+    </div>
+    <details class="compact">
+      <summary>Account & symbol tools</summary>
+      <div class="details-body">
+        <div class="stats">
+          <div class="stat"><span>ACCOUNT EQUITY</span><strong id="liveEquity">—</strong></div>
+          <div class="stat"><span>ACCOUNT CURRENCY</span><strong id="liveCurrency">—</strong></div>
+        </div>
+        <div class="row sectiongap"><button class="btn secondary" id="getAccount">Refresh account</button><button class="btn secondary" id="getSymbols">Load symbols</button></div>
+      </div>
+    </details>
+    <div class="note">Jika dibuka di browser biasa, kalkulator tetap dapat diuji tetapi host trading tidak tersedia.</div>
+  </div>
+
+  <div class="card sectiongap">
+    <div class="cardhead"><h2>VERIFICATION</h2><span class="eyebrow">LOCAL SESSION</span></div>
+    <details class="compact">
+      <summary>Open verification log</summary>
+      <div class="details-body">
+        <div class="log" id="log" aria-live="polite">AegisRisk Pro loaded.
+Safety mode: live orders disabled.
+Edit inputs to verify risk calculations.</div>
+        <div class="row sectiongap"><button class="btn secondary" id="clearLog">Clear log</button><button class="btn secondary" id="demoReset">Reset demo</button></div>
+      </div>
+    </details>
+    <details class="compact">
+      <summary>Production readiness checklist</summary>
+      <div class="details-body">
+        <div class="help">Sebelum live: verifikasi schema SDK, spesifikasi simbol, volume min/max/step, konversi mata uang, SL terpasang pada posisi, dan kegagalan order. Uji seluruh skenario di akun demo.</div>
+      </div>
+    </details>
+    <div class="note">*Estimasi menggunakan asumsi 100.000 unit per lot. Komisi, slippage, gap, volume broker, dan konversi mata uang belum dihitung otomatis.</div>
+  </div>
+</section>
+</div>
+<div class="foot">AEGISRISK PRO • Verification build 0.1.0 • No secrets stored • No live orders submitted</div>
+</main>
+<script type="module">
+const $ = id => document.getElementById(id);
+const logBox = $("log");
+function log(message, data) {
+  const line = `[${new Date().toLocaleTimeString()}] ${message}` + (data === undefined ? "" : "\n" + JSON.stringify(data, null, 2));
+  logBox.textContent = (line + "\n\n" + logBox.textContent).slice(0, 12000);
+}
+function finitePositive(id) { const n = Number($(id).value); return Number.isFinite(n) && n > 0 ? n : NaN; }
+function money(n, ccy) {
+  if (!Number.isFinite(n)) return "—";
+  try { return new Intl.NumberFormat(undefined,{style:"currency",currency:ccy || "USD",maximumFractionDigits:2}).format(n); }
+  catch { return `${n.toFixed(2)} ${ccy || ""}`; }
+}
+function calculate() {
+  const equity=finitePositive("equity"), risk=finitePositive("risk"), entry=finitePositive("entry"), stop=finitePositive("stop"), pip=finitePositive("pipSize"), pipValue=finitePositive("pipValue"), ccy=$("currency").value.trim() || "—";
+  $("ccyLabel").textContent=ccy;
+  if (![equity,risk,entry,stop,pip,pipValue].every(Number.isFinite) || risk>10 || risk<0.01 || entry===stop) {
+    $("lots").textContent="Invalid input"; $("units").textContent="—"; $("slDistance").textContent="SL distance: —"; $("riskCash").textContent="Risk budget: —"; $("riskPercentOut").textContent="—"; return;
+  }
+  const distance=Math.abs(entry-stop)/pip;
+  const riskCash=equity*risk/100;
+  const lots=riskCash/(distance*pipValue);
+  if (!Number.isFinite(lots) || lots<=0) { $("lots").textContent="—"; $("units").textContent="—"; return; }
+  $("lots").textContent=lots.toLocaleString(undefined,{maximumFractionDigits:4})+" lots";
+  $("units").textContent=(lots*100000).toLocaleString(undefined,{maximumFractionDigits:0})+" units*";
+  $("slDistance").textContent=`SL distance: ${distance.toLocaleString(undefined,{maximumFractionDigits:2})} pips`;
+  $("riskCash").textContent=`Risk budget: ${money(riskCash,ccy)}`;
+  $("riskPercentOut").textContent=risk.toFixed(2)+"%";
+}
+["symbol","risk","equity","currency","entry","stop","pipSize","pipValue"].forEach(id => $(id).addEventListener("input",calculate));
+$("clearLog").addEventListener("click",()=>{logBox.textContent="Log cleared.";});
+$("demoReset").addEventListener("click",()=>{
+  $("symbol").value="EURUSD";$("risk").value="1";$("equity").value="10000";$("currency").value="USD";$("entry").value="1.08500";$("stop").value="1.08200";$("pipSize").value="0.0001";$("pipValue").value="10";calculate();log("Demo values reset.");
+});
+$("buy").addEventListener("click",()=>log("Blocked by safety guard: live execution is not enabled."));
+$("sell").addEventListener("click",()=>log("Blocked by safety guard: live execution is not enabled."));
+calculate();
+
+// cTrader plugin SDK handshake, using the official SDK packages served as ESM.
+let adapter=null, connected=false, sdk=null;
+try {
+  const external=await import("https://esm.sh/@spotware-web-team/sdk-external-api@0.0.5");
+  sdk=await import("https://esm.sh/@spotware-web-team/sdk@0.0.9");
+  const rx=await import("https://esm.sh/rxjs@7.8.2");
+  const loggerLib=await import("https://esm.sh/@veksa/logger@1.0.6");
+  adapter=external.createClientAdapter({logger:loggerLib.createLogger(new URLSearchParams(location.search).has("showLogs"))});
+  $("mode").textContent="cTrader SDK";
+  $("sdkChip").textContent="SDK LOADED";
+  $("hostState").textContent="Handshake…";
+  $("connection").innerHTML='<span class="dot"></span>SDK dimuat; menunggu host';
+  sdk.handleConfirmEvent(adapter,{}).pipe(rx.take(1)).subscribe();
+  sdk.registerEvent(adapter).pipe(rx.take(1),rx.tap(()=>{
+    sdk.handleConfirmEvent(adapter,{}).pipe(rx.take(1)).subscribe();
+    connected=true;
+    $("hostState").textContent="Connected";
+    $("connection").style.color="var(--green)";
+    $("connection").innerHTML='<span class="dot"></span>Terhubung ke cTrader';
+    $("sdkChip").textContent="CONNECTED";
+    log("Connected to cTrader host.");
+  }),rx.catchError(err=>{log("Host handshake failed",String(err));return [];})).subscribe();
+  $("getAccount").addEventListener("click",()=>{
+    if(!connected){log("Account request blocked: host not connected.");return;}
+    sdk.getAccountInformation(adapter,{}).pipe(rx.take(1),rx.tap(res=>{
+      log("Account information received.",res);
+      const find=(obj,keys,depth=0)=>{if(!obj||typeof obj!=="object"||depth>5)return undefined;for(const k of keys){if(obj[k]!==undefined&&obj[k]!==null)return obj[k]}for(const v of Object.values(obj)){const r=find(v,keys,depth+1);if(r!==undefined)return r}return undefined};
+      const eq=find(res,["equity","Equity"]), currency=find(res,["currency","depositCurrency","accountCurrency"]);
+      if(Number.isFinite(Number(eq))&&Number(eq)>0){$("liveEquity").textContent=money(Number(eq),String(currency||$("currency").value));$("equity").value=Number(eq);calculate();}
+      if(currency){$("liveCurrency").textContent=String(currency);$("currency").value=String(currency);calculate();}
+    }),rx.catchError(err=>{log("Account request failed",String(err));return [];})).subscribe();
+  });
+  $("getSymbols").addEventListener("click",()=>{
+    if(!connected){log("Symbol request blocked: host not connected.");return;}
+    sdk.getLightSymbolList(adapter,{}).pipe(rx.take(1),rx.tap(res=>log("Tradeable symbols response received.",res)),rx.catchError(err=>{log("Symbol request failed",String(err));return [];})).subscribe();
+  });
+  log("Plugin SDK modules loaded. Live order execution remains deliberately disabled.");
+} catch(err) {
+  $("mode").textContent="Preview only";
+  $("sdkChip").textContent="PREVIEW";
+  $("hostState").textContent="Tidak terhubung";
+  $("connection").innerHTML='<span class="dot"></span>Mode preview browser';
+  log("SDK unavailable in this context; preview calculator remains available.",String(err));
+}
+</script>
+</body>
+</html>
