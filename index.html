@@ -287,7 +287,7 @@ try {
   $("connection").innerHTML='<span class="dot"></span>SDK dimuat; menunggu host';
   // Diagnostic handshake: do not mark connected until registerEvent emits a host response.
   log("SDK modules imported successfully.");
-  log("Runtime origin.", { origin: location.origin, href: location.href, referrer: document.referrer || "(not exposed by host)" });
+  log("Runtime context.", { origin: location.origin, href: location.href, referrer: document.referrer || "(not exposed by host)", isFramed: window.self !== window.top, visibility: document.visibilityState, userAgent: navigator.userAgent });
   log("Using the cTrader client adapter created for this session.");
   log("If host registration times out, compare this exact origin with the URL configured in the cTrader plugin builder. Avoid redirects to another domain.");
 
@@ -304,56 +304,81 @@ try {
   };
 
   log("Handshake step 1/3: sending initial confirmEvent.");
+  let initialConfirmReceived = false;
   sdk.handleConfirmEvent(adapter,{}).pipe(
     rx.take(1),
-    rx.tap(() => log("Initial confirmEvent response received.")),
+    rx.tap(() => {
+      initialConfirmReceived = true;
+      log("Initial confirmEvent response received.");
+    }),
     rx.catchError(err => {
       log("Initial confirmEvent failed.", describeError(err));
       return [];
     })
   ).subscribe({
-    complete: () => log("Initial confirmEvent stream completed.")
+    complete: () => {
+      if (!initialConfirmReceived) log("Initial confirmEvent stream completed without a response.");
+    }
   });
 
-  log("Handshake step 2/3: waiting for registerEvent host response (15-second timeout).");
+  log("Handshake step 2/3: waiting for registerEvent host response (20-second diagnostic timeout).");
+  let registrationReceived = false;
   sdk.registerEvent(adapter).pipe(
     rx.take(1),
-    rx.timeout({ first: 15000 }),
+    rx.timeout({ first: 20000 }),
     rx.tap(res => {
+      registrationReceived = true;
       log("registerEvent response received.", res);
-      log("Handshake step 3/3: sending final confirmEvent.");
-      sdk.handleConfirmEvent(adapter,{}).pipe(
-        rx.take(1),
-        rx.tap(() => log("Final confirmEvent response received.")),
-        rx.catchError(err => {
-          log("Final confirmEvent failed.", describeError(err));
-          return [];
-        })
-      ).subscribe({
-        complete: () => log("Final confirmEvent stream completed.")
-      });
-
-      connected=true;
-      $("hostState").textContent="Connected";
-      $("connection").style.color="var(--green)";
-      $("connection").innerHTML='<span class="dot"></span>Terhubung ke cTrader';
-      $("sdkChip").textContent="CONNECTED";
-      log("Handshake complete: cTrader host registration confirmed.");
+      log("Handshake step 3/3: awaiting final confirmEvent response.");
     }),
     rx.catchError(err => {
       const timedOut = err && (err.name === "TimeoutError" || err.name === "Timeout");
-      $("hostState").textContent = timedOut ? "Timeout — host belum merespons" : "Handshake gagal";
-      $("connection").style.color="var(--amber)";
-      $("connection").innerHTML='<span class="dot"></span>SDK dimuat; host belum terhubung';
+      $("hostState").textContent = timedOut ? "Host tidak merespons" : "Handshake gagal";
+      $("connection").style.color = "var(--amber)";
+      $("connection").innerHTML = '<span class="dot"></span>SDK dimuat; host belum terhubung';
       $("sdkChip").textContent = timedOut ? "HOST TIMEOUT" : "HANDSHAKE ERROR";
       log(timedOut
-        ? "Host did not respond to registerEvent within 15 seconds. Verify the cTrader plugin builder URL exactly matches https://kututbayu.github.io/AegisRisk-Pro/ (including repository path), then republish/update the plugin. If it already matches, capture this log and contact cTrader support; the host bridge is not responding."
-        : "Host handshake failed.", describeError(err));
+        ? "registerEvent timed out: the cTrader host did not register this WebView client. The SDK packages loaded, but the host bridge did not complete registration. Check that the plugin is enabled/launched from inside cTrader, that the published Builder URL is the exact HTTPS page URL, and that the page does not redirect. If all are correct, collect the full log and report it to cTrader support."
+        : "Host registration failed.", describeError(err));
       return [];
     })
   ).subscribe({
+    next: () => {
+      if (!registrationReceived) return;
+      let finalConfirmReceived = false;
+      sdk.handleConfirmEvent(adapter,{}).pipe(
+        rx.take(1),
+        rx.tap(res => {
+          finalConfirmReceived = true;
+          connected = true;
+          $("hostState").textContent = "Connected";
+          $("connection").style.color = "var(--green)";
+          $("connection").innerHTML = '<span class="dot"></span>Terhubung ke cTrader';
+          $("sdkChip").textContent = "CONNECTED";
+          log("Final confirmEvent response received.", res);
+          log("Handshake complete: cTrader host registration and final confirmation succeeded.");
+        }),
+        rx.catchError(err => {
+          log("Final confirmEvent failed; host remains disconnected.", describeError(err));
+          $("hostState").textContent = "Konfirmasi akhir gagal";
+          $("sdkChip").textContent = "CONFIRM ERROR";
+          return [];
+        })
+      ).subscribe({
+        complete: () => {
+          if (!finalConfirmReceived) {
+            $("hostState").textContent = "Konfirmasi akhir tanpa respons";
+            $("sdkChip").textContent = "CONFIRM INCOMPLETE";
+            log("Final confirmEvent stream completed without a response; keeping host disconnected.");
+          }
+        },
+        error: err => log("Unexpected final confirmEvent stream error.", describeError(err))
+      });
+    },
     error: err => log("Unexpected registerEvent stream error.", describeError(err)),
-    complete: () => log("registerEvent stream completed.")
+    complete: () => {
+      if (!registrationReceived) log("registerEvent stream completed without a registration event.");
+    }
   });
   $("getAccount").addEventListener("click",()=>{
     if(!connected){log("Account request blocked: host not connected.");return;}
@@ -363,11 +388,11 @@ try {
       const eq=find(res,["equity","Equity"]), currency=find(res,["currency","depositCurrency","accountCurrency"]);
       if(Number.isFinite(Number(eq))&&Number(eq)>0){$("liveEquity").textContent=money(Number(eq),String(currency||$("currency").value));$("equity").value=Number(eq);calculate();}
       if(currency){$("liveCurrency").textContent=String(currency);$("currency").value=String(currency);calculate();}
-    }),rx.catchError(err=>{log("Account request failed",String(err));return [];})).subscribe();
+    }),rx.catchError(err=>{log("Account request failed",describeError(err));return [];})).subscribe();
   });
   $("getSymbols").addEventListener("click",()=>{
     if(!connected){log("Symbol request blocked: host not connected.");return;}
-    sdk.getLightSymbolList(adapter,{}).pipe(rx.take(1),rx.tap(res=>log("Tradeable symbols response received.",res)),rx.catchError(err=>{log("Symbol request failed",String(err));return [];})).subscribe();
+    sdk.getLightSymbolList(adapter,{}).pipe(rx.take(1),rx.tap(res=>log("Tradeable symbols response received.",res)),rx.catchError(err=>{log("Symbol request failed",describeError(err));return [];})).subscribe();
   });
   log("Plugin SDK modules loaded. Live order execution remains deliberately disabled.");
 } catch(err) {

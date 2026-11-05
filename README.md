@@ -1,6 +1,6 @@
 # AegisRisk Pro — Web Plugin verification build
 
-Version: 0.2.0  
+Version: 0.3.1  
 UI update: compact grouped sections with collapsible advanced settings, account tools, logs and readiness checklist.  
 Language: Indonesian UI  
 Purpose: premium responsive risk calculator + cTrader Plugin SDK handshake/account/symbol verification.
@@ -59,3 +59,11 @@ Production release still requires a dedicated integration pass:
 - Preserved the existing risk calculator and disabled order buttons.
 - Added runtime origin diagnostics to help verify the cTrader Builder URL.
 - Host handshake still requires a response from the cTrader host; a timeout is not treated as a successful connection.
+
+
+## Version 0.3.1 — SDK handshake verification
+- Corrected the connection state: `Connected` is now shown only after the final `confirmEvent` returns a response.
+- Increased the registration diagnostic timeout to 20 seconds and clarified host-registration failure logs.
+- Added runtime context details (frame status, visibility and user agent) to help isolate mobile WebView issues.
+- Kept BUY/SELL disabled; no order execution method is called.
+- This build improves handshake correctness and diagnostics; it cannot force the cTrader host bridge to respond if the host/plugin environment does not provide registration.
