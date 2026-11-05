@@ -44,6 +44,65 @@ details.compact[open]>summary:after{content:"−"}
 @media(max-width:760px){main{padding:10px 9px 18px}.layout{grid-template-columns:1fr}.card{padding:13px}.grid2{grid-template-columns:1fr 1fr}.big{font-size:27px}.top{margin-bottom:9px}}
 @media(max-width:360px){.grid2{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
 
+
+/* AegisRisk Pro 0.3 — professional dashboard layer */
+:root{--bg:#080d18;--panel:#111a2b;--panel2:#0c1423;--line:#293953;--muted:#8fa2bf;--text:#edf4ff;--green:#36d6a0;--red:#ff657c;--blue:#72b8ff;--amber:#f3c66c}
+body{background:radial-gradient(ellipse at 12% -8%,#1b4260 0,transparent 38%),radial-gradient(ellipse at 100% 20%,#17342f 0,transparent 30%),linear-gradient(145deg,#070c16,#0a1221 52%,#0b1020);letter-spacing:.01em}
+main{max-width:1240px;padding:20px 18px 34px}
+.top{padding:4px 2px 16px;border-bottom:1px solid #26344a;margin-bottom:15px}
+.logo{width:50px;height:50px;border-radius:16px;background:linear-gradient(145deg,#1b8067,#183d67);box-shadow:0 8px 28px #16bd8a25}
+.brand h1{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.sub{font-size:10px;letter-spacing:2.4px}
+.status{padding:9px 14px;background:#111d2d;border-color:#33455f}
+.navbar{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:0 0 14px;margin-bottom:14px;scrollbar-width:none}
+.navbar::-webkit-scrollbar{display:none}
+.navlink{flex:0 0 auto;text-decoration:none;color:#a9bad1;background:#101a2a;border:1px solid #283950;border-radius:11px;padding:9px 13px;font-size:12px;font-weight:700;transition:.15s}
+.navlink:hover,.navlink.active{color:#eaf5ff;border-color:#287b69;background:linear-gradient(135deg,#12382f,#122a3d)}
+.hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,.6fr);gap:14px;margin-bottom:15px}
+.hero-main,.hero-side{border:1px solid #2a4059;border-radius:19px;background:linear-gradient(120deg,#14283b,#101c2e 65%,#102c2b);padding:18px;min-width:0;box-shadow:0 15px 36px #0002}
+.hero-kicker{font-size:10px;letter-spacing:2px;color:#86b9c7;font-weight:800}
+.hero-title{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:5px 0}
+.hero-copy{font-size:12px;color:#a9bbd0;max-width:620px}
+.hero-side{display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg,#102c2b,#101b2d)}
+.hero-side strong{font-size:22px;color:var(--green)}
+.hero-side span{font-size:11px;color:#9eb5c8}
+.layout{grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:14px}
+.card{border:1px solid #2b3b54;background:linear-gradient(155deg,#151f31f5,#0e1727f8);border-radius:19px;padding:18px;box-shadow:0 14px 40px #0003}
+.cardhead{margin-bottom:14px}
+.card h2{font-size:13px;font-weight:800;letter-spacing:1.25px}
+.chip{font-weight:800;letter-spacing:.8px;padding:6px 10px}
+.stat{background:linear-gradient(145deg,#0d1728,#0b1321);border-color:#283950;border-radius:14px;padding:13px}
+.stat span{font-size:9px;font-weight:800;letter-spacing:1.2px}
+.stat strong{font-size:18px;font-weight:800}
+.field label{font-weight:800;letter-spacing:.8px}
+.field input,.field select{background:#091221;border-color:#30435f;border-radius:11px;padding:11px 12px}
+.field input:focus,.field select:focus{border-color:#45c6a0;box-shadow:0 0 0 3px #45c6a01a}
+.riskbox{border-color:#267763;background:linear-gradient(125deg,#0c302b,#103032 58%,#10233a);border-radius:17px;padding:16px}
+.big{font-size:34px}
+.actions .btn{padding:12px}
+.btn{border-radius:11px;font-weight:800;letter-spacing:.55px}
+.secondary{background:#17263b;border-color:#344963}
+.note{border-radius:12px;line-height:1.55}
+.warn{background:#2b2315;border-color:#66552e}
+details.compact{border-color:#2b3c55;background:#0b1423;border-radius:13px}
+details.compact>summary{padding:13px 14px;font-size:12px}
+.details-body{padding:0 14px 14px}
+.log{height:210px;border-color:#2b3b52;background:#070d17}
+.foot{padding-top:12px;border-top:1px solid #24334a;letter-spacing:.7px}
+.section-anchor{scroll-margin-top:12px}
+.feature-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.feature{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #293b54;border-radius:14px;background:#101a2a;min-width:0}
+.feature-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:#15352f;color:#55dbad;font-size:17px;flex:0 0 auto}
+.feature strong{display:block;font-size:11px;letter-spacing:.4px}
+.feature small{display:block;color:#8fa2bc;font-size:10px;margin-top:2px}
+@media(max-width:760px){
+ main{padding:13px 10px 24px}.top{align-items:center}.brand h1{font-size:21px}
+ .hero{grid-template-columns:1fr}.hero-main,.hero-side{padding:15px}.hero-title{font-size:20px}
+ .layout{grid-template-columns:1fr}.card{padding:15px}.feature-strip{grid-template-columns:1fr 1fr}
+ .navlink{padding:9px 11px}
+}
+@media(max-width:390px){.feature-strip{grid-template-columns:1fr}.status{font-size:9px}.stats{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -52,9 +111,32 @@ details.compact[open]>summary:after{content:"−"}
   <div class="brand"><div class="logo">A</div><div><h1>AegisRisk <span>Pro</span></h1><div class="sub">SMART RISK. SAFE TRADE.</div></div></div>
   <div class="status" id="connection"><span class="dot"></span>Menunggu cTrader host</div>
 </header>
+<nav class="navbar" aria-label="Navigasi utama">
+  <a class="navlink active" href="#overview">◈ Overview</a>
+  <a class="navlink" href="#calculator">▦ Risk Calculator</a>
+  <a class="navlink" href="#platform">⌁ Platform</a>
+  <a class="navlink" href="#verification">✓ Diagnostics</a>
+</nav>
+<section class="hero" id="overview">
+  <div class="hero-main">
+    <div class="hero-kicker">RISK MANAGEMENT WORKSPACE</div>
+    <div class="hero-title">Trade with a plan. Protect your capital.</div>
+    <div class="hero-copy">Pusat kendali risiko untuk menghitung ukuran posisi, memeriksa parameter trade, dan memantau kesiapan koneksi cTrader dalam satu tampilan.</div>
+  </div>
+  <div class="hero-side">
+    <span>EXECUTION SAFETY</span>
+    <strong>LIVE OFF</strong>
+    <span>Semua order tetap dikunci selama tahap verifikasi.</span>
+  </div>
+</section>
+<div class="feature-strip">
+  <div class="feature"><div class="feature-icon">◎</div><div><strong>POSITION SIZING</strong><small>Perhitungan risiko & volume</small></div></div>
+  <div class="feature"><div class="feature-icon">⌁</div><div><strong>PLATFORM LINK</strong><small>Status koneksi cTrader</small></div></div>
+  <div class="feature"><div class="feature-icon">✓</div><div><strong>SAFETY CENTER</strong><small>Validasi sebelum live</small></div></div>
+</div>
 <div class="layout">
 <section class="leftcol">
-  <div class="card">
+  <div class="card section-anchor" id="calculator">
     <div class="cardhead"><h2>RISK WORKSPACE</h2><span class="chip">CALCULATOR</span></div>
     <div class="grid2">
       <div class="field"><label for="risk">RISK PER TRADE (%)</label><input id="risk" type="number" min="0.01" max="10" step="0.01" value="1"></div>
@@ -93,7 +175,7 @@ details.compact[open]>summary:after{content:"−"}
 </section>
 
 <section class="rightcol">
-  <div class="card">
+  <div class="card section-anchor" id="platform">
     <div class="cardhead"><h2>PLATFORM CONNECTION</h2><span class="chip" id="sdkChip">SDK CHECK</span></div>
     <div class="stats">
       <div class="stat"><span>HOST STATUS</span><strong id="hostState">Belum terhubung</strong></div>
@@ -112,7 +194,7 @@ details.compact[open]>summary:after{content:"−"}
     <div class="note">Jika dibuka di browser biasa, kalkulator tetap dapat diuji tetapi host trading tidak tersedia.</div>
   </div>
 
-  <div class="card sectiongap">
+  <div class="card sectiongap section-anchor" id="verification">
     <div class="cardhead"><h2>VERIFICATION</h2><span class="eyebrow">LOCAL SESSION</span></div>
     <details class="compact">
       <summary>Open verification log</summary>
@@ -133,7 +215,7 @@ Edit inputs to verify risk calculations.</div>
   </div>
 </section>
 </div>
-<div class="foot">AEGISRISK PRO • Verification build 0.2.1 • No secrets stored • No live orders submitted</div>
+<div class="foot">AEGISRISK PRO • Verification build 0.3.0 • No secrets stored • No live orders submitted</div>
 </main>
 <script type="module">
 const $ = id => document.getElementById(id);
@@ -173,6 +255,13 @@ $("buy").addEventListener("click",()=>log("Blocked by safety guard: live executi
 $("sell").addEventListener("click",()=>log("Blocked by safety guard: live execution is not enabled."));
 calculate();
 
+document.querySelectorAll(".navlink").forEach(link => {
+  link.addEventListener("click", () => {
+    document.querySelectorAll(".navlink").forEach(item => item.classList.remove("active"));
+    link.classList.add("active");
+  });
+});
+
 // cTrader plugin SDK handshake, using the official SDK packages served as ESM.
 window.addEventListener("error", event => {
   log("Browser runtime error.", {
@@ -198,7 +287,9 @@ try {
   $("connection").innerHTML='<span class="dot"></span>SDK dimuat; menunggu host';
   // Diagnostic handshake: do not mark connected until registerEvent emits a host response.
   log("SDK modules imported successfully.");
+  log("Runtime origin.", { origin: location.origin, href: location.href, referrer: document.referrer || "(not exposed by host)" });
   log("Using the cTrader client adapter created for this session.");
+  log("If host registration times out, compare this exact origin with the URL configured in the cTrader plugin builder. Avoid redirects to another domain.");
 
   const describeError = err => {
     if (err && typeof err === "object") {
@@ -256,7 +347,7 @@ try {
       $("connection").innerHTML='<span class="dot"></span>SDK dimuat; host belum terhubung';
       $("sdkChip").textContent = timedOut ? "HOST TIMEOUT" : "HANDSHAKE ERROR";
       log(timedOut
-        ? "Host did not respond to registerEvent within 15 seconds. Confirm this page is opened inside the published cTrader WebView plugin, then check plugin domain/URL configuration."
+        ? "Host did not respond to registerEvent within 15 seconds. Verify the cTrader plugin builder URL exactly matches https://kututbayu.github.io/AegisRisk-Pro/ (including repository path), then republish/update the plugin. If it already matches, capture this log and contact cTrader support; the host bridge is not responding."
         : "Host handshake failed.", describeError(err));
       return [];
     })

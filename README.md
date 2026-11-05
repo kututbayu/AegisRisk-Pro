@@ -51,3 +51,11 @@ Production release still requires a dedicated integration pass:
 - Add an explicit confirmation modal, a hard demo/live environment indicator and tested fail-closed behaviour.
 - Run browser/device tests in cTrader Desktop, Web and Mobile; test symbols with different contract specifications.
 - Do not expose tokens, credentials, API secrets or account identifiers in client-side source.
+
+
+## Version 0.3.0 — Professional dashboard
+- Refined responsive dashboard layout and navigation.
+- Added overview, feature summary, and clear LIVE OFF safety banner.
+- Preserved the existing risk calculator and disabled order buttons.
+- Added runtime origin diagnostics to help verify the cTrader Builder URL.
+- Host handshake still requires a response from the cTrader host; a timeout is not treated as a successful connection.
