@@ -1,5 +1,7 @@
 # AegisRisk Pro — Web Plugin verification build
 
+**Version 0.3.1 — footer version corrected.**
+
 Version: 0.3.1  
 UI update: compact grouped sections with collapsible advanced settings, account tools, logs and readiness checklist.  
 Language: Indonesian UI  
